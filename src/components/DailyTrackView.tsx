@@ -133,7 +133,7 @@ export default function DailyTrackView({
             <div className="flex items-center gap-1.5 mb-1">
               <span className="text-[10px] font-mono text-indigo-600 uppercase tracking-widest font-bold">Daily Track</span>
               <span className="text-zinc-300">•</span>
-              <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest font-bold">Today</span>
+              <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest font-bold">Task Dashboard</span>
             </div>
             <h3 className="font-serif text-2xl font-extrabold text-zinc-900 tracking-tight">
               {formatHumanDate(todayStr)}
@@ -154,26 +154,6 @@ export default function DailyTrackView({
             className="bg-indigo-600 h-full rounded-full transition-all duration-300"
             style={{ width: `${completionPercentage}%` }}
           ></div>
-        </div>
-
-        {/* Daily logs section */}
-        <div className="space-y-1.5 pt-1">
-          <div className="flex justify-between items-center text-[11px]">
-            <label className="font-bold text-zinc-500 uppercase tracking-wider font-mono flex items-center gap-1">
-              <Edit3 size={11} className="text-zinc-400" />
-              Today's Main Focus & Goals
-            </label>
-            <span className="text-zinc-400 font-semibold text-[10px]">
-              {isSavingFocus ? "Saving changes..." : "All Changes Saved"}
-            </span>
-          </div>
-          <textarea
-            placeholder="What is your ultimate goal for today? Note it down..."
-            rows={2}
-            value={dailyFocus}
-            onChange={(e) => onFocusChange(e.target.value)}
-            className="w-full p-3 text-xs bg-zinc-50 border border-zinc-200 rounded-xl focus:outline-hidden focus:ring-1 focus:ring-indigo-500 focus:bg-white focus:border-indigo-500 transition-all text-zinc-700 leading-relaxed resize-none font-medium"
-          />
         </div>
       </div>
 
@@ -208,27 +188,8 @@ export default function DailyTrackView({
             </button>
           </div>
 
-          {/* METADATA DROPDOWNS: Category, Skill, Project */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
-            {/* Category selector */}
-            <div>
-              <label className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider block mb-1">Domain Category</label>
-              <select
-                value={newTodoCategory}
-                onChange={(e) => setNewTodoCategory(e.target.value as TodoItem["category"])}
-                className="w-full bg-zinc-50 hover:bg-zinc-100/80 border border-zinc-200 text-zinc-600 text-xs px-2.5 py-1.5 rounded-lg focus:outline-hidden cursor-pointer"
-              >
-                <option value="study">📚 Study</option>
-                <option value="coding">💻 Coding</option>
-                <option value="math">📐 Math</option>
-                <option value="research">🔬 Research</option>
-                <option value="personal">🏡 Personal</option>
-                <option value="health">🌱 Health</option>
-                <option value="work">💼 Work</option>
-                <option value="other">☕ Other</option>
-              </select>
-            </div>
-
+          {/* METADATA DROPDOWNS: Skill, Project */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
             {/* Skill association dropdown */}
             <div>
               <label className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider block mb-1">Associate Skill</label>
@@ -429,12 +390,8 @@ export default function DailyTrackView({
                       )}
                     </div>
 
-                    {/* Right column: category + delete */}
+                    {/* Right column: actions */}
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 border rounded-md ${badge?.bg}`}>
-                        {badge?.label || "Other"}
-                      </span>
-
                       <button
                         type="button"
                         onClick={() => onDeleteTodo(todo.id)}

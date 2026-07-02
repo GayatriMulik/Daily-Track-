@@ -48,6 +48,7 @@ export default function ProjectsView({
   const [demoUrl, setDemoUrl] = useState("");
   const [notes, setNotes] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
+  const [activeDeleteId, setActiveDeleteId] = useState<string | null>(null);
 
   const handleSkillToggle = (skillId: string) => {
     setSkillsApplied((prev) => 
@@ -294,18 +295,37 @@ export default function ProjectsView({
                         </select>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (confirm(`Are you sure you want to delete the project "${project.name}"? This will not delete the associated todos.`)) {
-                            onDeleteProject(project.id);
-                          }
-                        }}
-                        className="p-1 text-zinc-300 hover:text-rose-500 rounded-md hover:bg-rose-50 transition-colors cursor-pointer self-start"
-                        title="Delete Project"
-                      >
-                        <Trash2 size={13} />
-                      </button>
+                      {activeDeleteId === project.id ? (
+                        <div className="flex items-center gap-1.5 animate-in fade-in duration-100 self-start">
+                          <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Delete?</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              onDeleteProject(project.id);
+                              setActiveDeleteId(null);
+                            }}
+                            className="px-2 py-0.5 text-[9px] font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-md transition-colors cursor-pointer"
+                          >
+                            Confirm
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setActiveDeleteId(null)}
+                            className="px-2 py-0.5 text-[9px] font-bold text-zinc-500 bg-zinc-100 hover:bg-zinc-200 rounded-md transition-colors border border-zinc-200/50 cursor-pointer"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setActiveDeleteId(project.id)}
+                          className="p-1 text-zinc-300 hover:text-rose-500 rounded-md hover:bg-rose-50 transition-colors cursor-pointer self-start"
+                          title="Delete Project"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      )}
                     </div>
 
                     <h3 className="font-serif text-lg font-bold text-zinc-900 leading-tight">

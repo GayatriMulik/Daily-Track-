@@ -54,11 +54,10 @@ export default function SkillsView({
 }: SkillsViewProps) {
   // Skill form state
   const [name, setName] = useState("");
-  const [category, setCategory] = useState("Fundamentals");
-  const [customCategory, setCustomCategory] = useState("");
   const [level, setLevel] = useState<Skill["level"]>("Beginner");
   const [progress, setProgress] = useState(10);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [activeDeleteId, setActiveDeleteId] = useState<string | null>(null);
 
   // YouTube Playlists states
   const [expandedSkillId, setExpandedSkillId] = useState<string | null>(null);
@@ -83,28 +82,14 @@ export default function SkillsView({
     return localToday.toISOString().split("T")[0];
   });
 
-  // Suggestions for categories
-  const suggestedCategories = [
-    "Fundamentals",
-    "Machine Learning",
-    "Deep Learning / NLP",
-    "LLMs & RAG",
-    "Agents & Apps",
-    "MLOps / Systems",
-    "Personal Growth",
-    "Health & Fitness"
-  ];
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
-    const finalCategory = category === "custom" ? customCategory.trim() : category;
-    onAddSkill(name.trim(), finalCategory || "General", level, progress);
+    onAddSkill(name.trim(), "General", level, progress);
     
     // reset form
     setName("");
-    setCustomCategory("");
     setProgress(10);
     setShowAddForm(false);
   };
@@ -148,7 +133,7 @@ export default function SkillsView({
         <form onSubmit={handleSubmit} className="bg-white border border-zinc-200/85 p-5 rounded-2xl shadow-sm space-y-4 animate-in fade-in slide-in-from-top-2 duration-150">
           <h3 className="font-serif text-sm font-bold text-zinc-900">Configure Skill parameters</h3>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-4">
             <div>
               <label className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block mb-1">Skill Name</label>
               <input
@@ -160,35 +145,7 @@ export default function SkillsView({
                 className="w-full px-3 py-2 text-xs bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-indigo-500 focus:bg-white text-zinc-800 font-medium"
               />
             </div>
-
-            <div>
-              <label className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block mb-1">Skill Domain Category</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-zinc-50 hover:bg-zinc-100/80 border border-zinc-200 text-zinc-600 text-xs px-2.5 py-2 rounded-lg focus:outline-hidden cursor-pointer"
-              >
-                {suggestedCategories.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-                <option value="custom">-- Custom Category --</option>
-              </select>
-            </div>
           </div>
-
-          {category === "custom" && (
-            <div className="animate-in fade-in duration-100">
-              <label className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block mb-1">Custom Category Name</label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. Fine Tuning, UI Design"
-                value={customCategory}
-                onChange={(e) => setCustomCategory(e.target.value)}
-                className="w-full px-3 py-2 text-xs bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-indigo-500 focus:bg-white text-zinc-800 font-medium"
-              />
-            </div>
-          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -283,23 +240,38 @@ export default function SkillsView({
                 
                 {/* CARD UPPER RAIL */}
                 <div className="space-y-1.5">
-                  <div className="flex justify-between items-start">
-                    <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-zinc-400">
-                      {skill.category}
-                    </span>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (confirm(`Are you sure you want to delete the skill "${skill.name}"? This will not delete the associated todos.`)) {
-                          onDeleteSkill(skill.id);
-                        }
-                      }}
-                      className="p-1 text-zinc-300 hover:text-rose-500 rounded-md hover:bg-rose-50 transition-colors cursor-pointer"
-                      title="Delete Skill"
-                    >
-                      <Trash2 size={13} />
-                    </button>
+                  <div className="flex justify-end items-center min-h-[28px]">
+                    {activeDeleteId === skill.id ? (
+                      <div className="flex items-center gap-1.5 animate-in fade-in duration-100">
+                        <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Delete?</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onDeleteSkill(skill.id);
+                            setActiveDeleteId(null);
+                          }}
+                          className="px-2 py-0.5 text-[9px] font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-md transition-colors cursor-pointer"
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActiveDeleteId(null)}
+                          className="px-2 py-0.5 text-[9px] font-bold text-zinc-500 bg-zinc-100 hover:bg-zinc-200 rounded-md transition-colors border border-zinc-200/50 cursor-pointer"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setActiveDeleteId(skill.id)}
+                        className="p-1 text-zinc-300 hover:text-rose-500 rounded-md hover:bg-rose-50 transition-colors cursor-pointer"
+                        title="Delete Skill"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    )}
                   </div>
 
                   <h3 className="font-serif text-base font-bold text-zinc-900 leading-tight">
