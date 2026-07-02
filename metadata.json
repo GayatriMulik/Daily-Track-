@@ -1,0 +1,6 @@
+{
+  "name": "DailyTrack",
+  "description": "A beautifully simple, elegant light-themed Todo and day-to-day progress tracker with real-time cloud database synchronization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

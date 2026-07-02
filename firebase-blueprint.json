@@ -1,0 +1,169 @@
+{
+  "entities": {
+    "TodoItem": {
+      "title": "TodoItem",
+      "description": "Represents a single light-themed, synchronized todo item",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the todo task"
+        },
+        "text": {
+          "type": "string",
+          "description": "The description/text of the task"
+        },
+        "completed": {
+          "type": "boolean",
+          "description": "Whether the task is finished"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["study", "coding", "math", "research", "personal", "health", "work", "other"],
+          "description": "Category domain of the activity"
+        },
+        "userId": {
+          "type": "string",
+          "description": "The Firebase Authentication UID of the owner"
+        },
+        "date": {
+          "type": "string",
+          "description": "ISO Date string representing the scheduled day"
+        },
+        "skillId": {
+          "type": "string",
+          "description": "Optional reference to an associated Skill"
+        },
+        "projectId": {
+          "type": "string",
+          "description": "Optional reference to an associated Project"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the task was registered"
+        }
+      },
+      "required": ["id", "text", "completed", "userId", "date", "createdAt"]
+    },
+    "Skill": {
+      "title": "Skill",
+      "description": "A developer or personal learning skill target being tracked",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the skill"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user UID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the skill"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category classification"
+        },
+        "progress": {
+          "type": "integer",
+          "description": "Progress score 0-100"
+        },
+        "level": {
+          "type": "string",
+          "enum": ["Beginner", "Intermediate", "Advanced"],
+          "description": "Skill competence level"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["id", "userId", "name", "category", "progress", "level", "createdAt"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "A portfolio or personal development project tracked by the user",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the project"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user UID"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Idea", "In Progress", "Completed"]
+        },
+        "skillsApplied": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Skill IDs that are exercised or developed inside this project"
+        },
+        "notes": { "type": "string" },
+        "githubUrl": { "type": "string" },
+        "demoUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "name", "description", "status", "skillsApplied", "createdAt"]
+    },
+    "DailyNote": {
+      "title": "DailyNote",
+      "description": "A daily log entry or focus topic for a specific date and user",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Combination of userId and date"
+        },
+        "userId": {
+          "type": "string",
+          "description": "The Firebase Authentication UID of the owner"
+        },
+        "date": {
+          "type": "string",
+          "description": "ISO Date string representing the day"
+        },
+        "focusText": {
+          "type": "string",
+          "description": "The primary focus, objective, or log notes for the day"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last updated timestamp"
+        }
+      },
+      "required": ["id", "userId", "date", "focusText", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "todos/{todoId}": {
+      "schema": "#/entities/TodoItem",
+      "description": "A collection storing individual synchronized todos for authenticated users"
+    },
+    "dailyNotes/{noteId}": {
+      "schema": "#/entities/DailyNote",
+      "description": "A collection storing daily focus statements and simple logs"
+    },
+    "skills/{skillId}": {
+      "schema": "#/entities/Skill",
+      "description": "A collection storing skills being developed"
+    },
+    "projects/{projectId}": {
+      "schema": "#/entities/Project",
+      "description": "A collection storing projects being tracked"
+    }
+  }
+}
